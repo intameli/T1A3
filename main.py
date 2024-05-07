@@ -1,6 +1,7 @@
 import string
 from random import randint
 from math import floor
+from entities import Player, Spearman
 
 scores = {
     1.25: ['B', 'C', 'F', 'H', 'M', 'P'],
@@ -37,16 +38,32 @@ damage_original = {
   13: 8,
   14: 9.5,
   15: 11,
-  16:13
+  16:13,
+  17: 13,
+  18: 13,
+  19: 13,
+  20: 13,
+  21: 13,
+  22: 13
 }
 damage = {k: int(v*4) for k, v in damage_original.items()}
 
 tile_options = []
 vowels = ['A', 'E', 'I', 'O', 'U']
 for c in string.ascii_uppercase:
-    tile_options.append(c + 'u') if c == 'Q' else tile_options.append(c)
-    if c in vowels:
-        tile_options.append(c)
+    char = c
+    if c == 'Q':
+        char = 'Qu'
+    tile_options.append(char)
+    if char in vowels:
+        tile_options.append(char)
+    # if char in ['X','Z','Qu','K','J']:
+    #     tile_options.extend([char] * 2)
+    # elif char in ['B', 'C', 'F', 'H', 'M', 'P', 'V','W','Y']:
+    #     tile_options.extend([char] * 3)
+    # else:
+    #     tile_options.extend([char] * 4)
+# print(tile_options)
 
 def load_words():
     with open('wordlist.txt') as word_file:
@@ -57,11 +74,16 @@ if __name__ == '__main__':
     english_words = load_words()
 
 class Game:
+    def __init__(self):
+        self.player = Player()
+        self.spearman = Spearman()
+
     def rand_tile(self):
             i = randint(0, len(tile_options) - 1)
             return tile_options[i]
     
     def print_UI(self, tiles):
+        print(f'Health: {self.player.health}  Enemy Health: {self.spearman.health}')
         for j in range(4):
                 row = ''
                 for i in range(4):
@@ -110,10 +132,7 @@ class Game:
                 index = tiles.index(c)
                 tiles[index] = self.rand_tile()
             dmg = damage[floor(score)]
-            print(str(dmg))
+            self.spearman.health -= dmg
+            self.spearman.attack(self.player)
             
-
-
-
-game = Game()
-game.main_loop()
+Game().main_loop()
