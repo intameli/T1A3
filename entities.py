@@ -14,26 +14,25 @@ class Enemy:
 
     def atack(self):
         for effect in self.ailments:
-            verb = effect['name']
             effect['turns'] -= 1
-            print(f'You take {verb} damage')
+            print(f'You take {effect["type"]} damage')
             self.player.health -= 1
             if effect['turns'] == 0:
                 self.ailments.remove(effect)
                 
         curr_atk = self.attacks[self.attack_i]
-        fn_str = list(curr_atk.keys())[0]
-        value = list(curr_atk.values())[0]
-        getattr(self, fn_str)(value)
+        fn_str = curr_atk['type']
+        getattr(self, fn_str)(curr_atk)
+
         self.attack_i += 1
         if self.attack_i == len(self.attacks):
             self.attack_i = 0
 
-    def basic(self, dmg):
-        print(f'{self.name} attacks you for {dmg} damage')
-        self.player.health -= dmg
+    def basic(self, atk):
+        print(f'{self.name} attacks you for {atk["dmg"]} damage')
+        self.player.health -= atk['dmg']
 
-    def burn(self, dmg):
-        print(f'{self.name} burns you for {dmg} damage')
-        self.player.health -= dmg
-        self.ailments.append({'name':'burn','dmg':1, 'turns': 2})
+    def burn(self, atk):
+        print(f'{self.name} burns you for {atk["dmg"]} damage')
+        self.player.health -= atk['dmg']
+        self.ailments.append(atk)

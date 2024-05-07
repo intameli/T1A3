@@ -159,6 +159,7 @@ class Game:
             self.curr_enemy.health -= dmg
             if self.curr_enemy.health <= 0:
                 self.next_enemy()
+                self.player.health = self.player.max_health
                 continue
             self.curr_enemy.atack()
             
