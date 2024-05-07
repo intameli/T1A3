@@ -1,7 +1,8 @@
 import string
 from random import randint
 from math import floor
-from entities import Player, Spearman
+from entities import Player, Enemy
+from enemies import enemies
 
 scores = {
     1.25: ['B', 'C', 'F', 'H', 'M', 'P'],
@@ -75,24 +76,35 @@ if __name__ == '__main__':
 
 class Game:
     def __init__(self):
+        self.running = True
+        self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
-        self.spearman = Spearman()
+        self.enemy_arr = [Enemy(**e, player=self.player) for e in enemies]
+        self.enemy_i = 0
+        self.curr_enemy = self.enemy_arr[self.enemy_i]
+
+    def next_enemy(self):
+        print(f'You defeated {self.curr_enemy.name}')
+        self.enemy_i += 1
+        self.curr_enemy = self.enemy_arr[self.enemy_i]
+        print(f'{self.curr_enemy.name} appears before you')
 
     def rand_tile(self):
             i = randint(0, len(tile_options) - 1)
             return tile_options[i]
     
-    def print_UI(self, tiles):
-        print(f'Health: {self.player.health}  Enemy Health: {self.spearman.health}')
+    def print_UI(self):
+        print(self.curr_enemy.name)
+        print(f'Health: {self.player.health}  Enemy Health: {self.curr_enemy.health}')
         for j in range(4):
                 row = ''
                 for i in range(4):
-                    tile = tiles[(j * 4) + i]
+                    tile = self.tiles[(j * 4) + i]
                     row += tile + '  ' if len(tile) == 1 else tile + ' '
                 print(row)
 
-    def valid_tiles(self, tiles, player_input):
-        tiles_copy = tiles.copy()
+    def valid_tiles(self, player_input):
+        tiles_copy = self.tiles.copy()
         valid = True
         arr = []
         for i, c in enumerate(player_input):
@@ -108,31 +120,46 @@ class Game:
                 arr = []
                 break
         return arr
-        
-    def main_loop(self):
-        tiles = [self.rand_tile() for i in range(16)]
+    
+    def get_input(self):
         while True:
-            self.print_UI(tiles)
             player_input =  input("text: ").upper()
-            input_arr = self.valid_tiles(tiles, player_input)
+            input_arr = self.valid_tiles(player_input)
             if player_input == '/QUIT':
+                self.running = False
                 break
             elif player_input == '/SCRAMBLE':
-                tiles = [self.rand_tile() for i in range(16)]
+                self.tiles = [self.rand_tile() for i in range(16)]
+                break
             elif len(input_arr) == 0:
                 print('You can only use characters found in the tiles above')
                 continue
             elif player_input.lower() not in english_words:
                 print('Word not found in dictionary')
                 continue
+            else:
+                break
+        return input_arr
+
+    def main_loop(self):
+        while self.running:
+            self.print_UI()
+            input_arr = self.get_input()
+            
+            if self.running == False:
+                break
             
             score = 0
             for c in input_arr:
                 score += weights[c]
-                index = tiles.index(c)
-                tiles[index] = self.rand_tile()
+                index = self.tiles.index(c)
+                self.tiles[index] = self.rand_tile()
             dmg = damage[floor(score)]
-            self.spearman.health -= dmg
-            self.spearman.attack(self.player)
+
+            self.curr_enemy.health -= dmg
+            if self.curr_enemy.health <= 0:
+                self.next_enemy()
+                continue
+            self.curr_enemy.atack()
             
 Game().main_loop()
