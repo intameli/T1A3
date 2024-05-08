@@ -1,23 +1,23 @@
 atk = {'type': 'basic', 'dmg': 1}
 
-enemies = [
+ch1_enemies = [
     {
-        'name': 'Spearman',
+        'name': 'Trojan Spearman',
         'health': 4,
         'attacks': [atk]
     },
     {
-        'name': 'Warrior',
+        'name': 'Trojan Warrior',
         'health': 8,
         'attacks': [atk]
     },
     {
-        'name': 'Hound',
+        'name': 'War Hound',
         'health': 12,
         'attacks': [atk]
     },
     {
-        'name': 'Captain',
+        'name': 'Trojan Captain',
         'health': 12,
         'attacks': [atk]
     },
