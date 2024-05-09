@@ -3,14 +3,6 @@ from string import ascii_uppercase
 from random import randint
 from entities import Player, Enemy
 
-# if char in ['X','Z','Qu','K','J']:
-#     tile_options.extend([char] * 2)
-# elif char in ['B', 'C', 'F', 'H', 'M', 'P', 'V','W','Y']:
-#     tile_options.extend([char] * 3)
-# else:
-#     tile_options.extend([char] * 4)
-# print(tile_options)
-
 
 class Game:
     def __init__(self):
@@ -45,7 +37,6 @@ class Game:
 
     def next_enemy(self):
         print(f'You defeated {self.curr_enemy.name}.')
-
         if self.enemy_i == len(self.enemy_arr) - 1:
             if self.chapters_i == len(chapters) - 1:
                 print('You beat the game, congratulations!')
