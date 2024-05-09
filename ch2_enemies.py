@@ -29,6 +29,6 @@ ch2_enemies = [
     {
         'name': 'Polyphemus',
         'health': 28,
-        'attacks': [{'type': 'tile_smash', 'tiles': 1}, atk]
+        'attacks': [{'type': 'tile_smash', 'turns': 1}, atk]
     }
 ]

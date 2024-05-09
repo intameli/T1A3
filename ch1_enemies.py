@@ -29,6 +29,6 @@ ch1_enemies = [
     {
         'name': 'Polydamas',
         'health': 12,
-        'attacks': [{'type': 'burn', 'dmg': 1, 'turns': 2}, atk, atk]
+        'attacks': [{'type': 'fire', 'dmg': 1, 'turns': 2}, atk, atk]
     }
 ]

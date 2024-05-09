@@ -1,6 +1,6 @@
 weights = {
     # remember to chage back to 1, this is just for testing
-    'A': 10,
+    'A': 1,
     'B': 1.25,
     'C': 1.25,
     'D': 1,

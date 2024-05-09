@@ -3,48 +3,48 @@ from string import ascii_uppercase
 from random import randint
 from entities import Player, Enemy
 
-tile_options = []
-vowels = ['A', 'E', 'I', 'O', 'U']
-for c in ascii_uppercase:
-    char = c
-    if c == 'Q':
-        char = 'Qu'
-    tile_options.append(char)
-    if char in vowels:
-        tile_options.append(char)
-    # if char in ['X','Z','Qu','K','J']:
-    #     tile_options.extend([char] * 2)
-    # elif char in ['B', 'C', 'F', 'H', 'M', 'P', 'V','W','Y']:
-    #     tile_options.extend([char] * 3)
-    # else:
-    #     tile_options.extend([char] * 4)
+# if char in ['X','Z','Qu','K','J']:
+#     tile_options.extend([char] * 2)
+# elif char in ['B', 'C', 'F', 'H', 'M', 'P', 'V','W','Y']:
+#     tile_options.extend([char] * 3)
+# else:
+#     tile_options.extend([char] * 4)
 # print(tile_options)
-
-
-def load_words():
-    with open('wordlist.txt') as word_file:
-        valid_words = set(word_file.read().split())
-    return valid_words
-
-
-if __name__ == '__main__':
-    english_words = load_words()
 
 
 class Game:
     def __init__(self):
         self.running = True
+        self.words = self.load_words()
+        self.tile_options = self.get_tile_options()
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
-        self.chapters_i = 0
+        self.chapters_i = 1
         self.curr_chapter = chapters[self.chapters_i]
-        self.enemy_arr = [Enemy(**e, player=self.player)
+        self.enemy_arr = [Enemy(**e, player=self.player, game=self)
                           for e in self.curr_chapter['enemies']]
         self.enemy_i = 5
         self.curr_enemy = self.enemy_arr[self.enemy_i]
 
+    def load_words(self):
+        with open('wordlist.txt') as word_file:
+            valid_words = set(word_file.read().split())
+        return valid_words
+
+    def get_tile_options(self):
+        options = []
+        vowels = ['A', 'E', 'I', 'O', 'U']
+        for c in ascii_uppercase:
+            char = c
+            if c == 'Q':
+                char = 'Qu'
+            options.append(char)
+            if char in vowels:
+                options.append(char)
+        return options
+
     def next_enemy(self):
-        print(f'You defeated {self.curr_enemy.name}')
+        print(f'You defeated {self.curr_enemy.name}.')
 
         if self.enemy_i == len(self.enemy_arr) - 1:
             if self.chapters_i == len(chapters) - 1:
@@ -55,7 +55,8 @@ class Game:
             self.chapters_i += 1
             self.curr_chapter = chapters[self.chapters_i]
             self.enemy_i = 0
-            self.enemy_arr = [Enemy(**e, player=self.player)
+            # some of this should be a function probably
+            self.enemy_arr = [Enemy(**e, player=self.player, game=self)
                               for e in self.curr_chapter['enemies']]
         else:
             self.enemy_i += 1
@@ -64,13 +65,14 @@ class Game:
         print(f'{self.curr_enemy.name} appears before you')
 
     def rand_tile(self):
-        i = randint(0, len(tile_options) - 1)
-        return tile_options[i]
+        i = randint(0, len(self.tile_options) - 1)
+        return self.tile_options[i]
 
     def print_UI(self):
-        print(self.curr_enemy.name)
-        print(f'Health: {self.player.health}  '
-              f'Enemy Health: {self.curr_enemy.health}'
+        print(f'\n\nEnemy: {self.curr_enemy.name}  '
+              f'Location: {self.curr_chapter["location"]}\n'
+              f'Lex Health: {self.player.health}  '
+              f'Enemy Health: {self.curr_enemy.health}\n'
               )
         for j in range(4):
             row = ''
@@ -78,10 +80,12 @@ class Game:
                 tile = self.tiles[(j * 4) + i]
                 row += tile + '  ' if len(tile) == 1 else tile + ' '
             print(row)
+        print('')
+        for effect in self.curr_enemy.ailments:
+            print(effect)
 
     def valid_tiles(self, player_input):
         tiles_copy = self.tiles.copy()
-        valid = True
         arr = []
         for i, c in enumerate(player_input):
             char = c
@@ -100,7 +104,7 @@ class Game:
     def get_input(self):
         # error handling for numbers?
         while True:
-            player_input = input("text: ").upper()
+            player_input = input("Make a word! :  ").upper()
             input_arr = self.valid_tiles(player_input)
             if player_input == '/QUIT':
                 self.running = False
@@ -111,7 +115,7 @@ class Game:
             elif len(input_arr) == 0:
                 print('You can only use characters found in the tiles above')
                 continue
-            elif player_input.lower() not in english_words:
+            elif player_input.lower() not in self.words:
                 print('Word not found in dictionary')
                 continue
             else:
@@ -119,11 +123,14 @@ class Game:
         return input_arr
 
     def main_loop(self):
+        print('*' * 20)
         while self.running:
             self.print_UI()
             input_list = self.get_input()
             if self.running == False:
                 break
+            print('*' * 20)
+            print('\n')
 
             for c in input_list:
                 index = self.tiles.index(c)
@@ -133,6 +140,7 @@ class Game:
             if self.curr_enemy.health <= 0:
                 self.next_enemy()
                 self.player.health = self.player.max_health
+                self.player.weights = self.player.master_weights
                 continue
             self.curr_enemy.attack()
 
