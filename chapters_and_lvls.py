@@ -13,3 +13,14 @@ chapters = [
         'treasure': 'golden_fleece'
     }
 ]
+# 100, 250
+lvls = [
+    {
+        'xp': 10,
+        'effect': 'health'
+    },
+    {
+        'xp': 20,
+        'effect': 'dmg'
+    }
+]

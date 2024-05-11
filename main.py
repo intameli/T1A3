@@ -1,4 +1,4 @@
-from chapters import chapters
+from chapters_and_lvls import chapters, lvls
 from string import ascii_uppercase
 from random import randint
 from entities import Player, Enemy
@@ -12,10 +12,13 @@ class Game:
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
         self.chapters_i = 0
+        self.enemy_i = 0
+        self.set_chapter()
+
+    def set_chapter(self):
         self.curr_chapter = chapters[self.chapters_i]
         self.enemy_arr = [Enemy(**e, player=self.player, game=self)
                           for e in self.curr_chapter['enemies']]
-        self.enemy_i = 0
         self.curr_enemy = self.enemy_arr[self.enemy_i]
 
     def load_words(self):
@@ -35,8 +38,34 @@ class Game:
                 options.append(char)
         return options
 
+    def add_xp(self):
+        multiply = 10
+        if len(self.enemy_arr) == self.enemy_i + 1:
+            multiply = 15
+        xp = multiply * (self.chapters_i + 1)
+        self.player.xp += xp
+        print(f'You received {xp} xp.')
+
+    def lvl_up(self):
+        try:
+            if self.player.xp >= lvls[self.player.lvl - 1]['xp']:
+                self.player.lvl += 1
+                print(
+                    f'You have leveled up. You are now lvl {self.player.lvl}.')
+                match lvls[self.player.lvl - 2]['effect']:
+                    case 'health':
+                        self.player.health += 4
+                        print('Your health has increased.')
+                    case 'dmg':
+                        self.player.dmg_multi += 0.25
+                        print('You now do more damage.')
+        except IndexError:
+            pass
+
     def next_enemy(self):
         print(f'You defeated {self.curr_enemy.name}.')
+        self.add_xp()
+        self.lvl_up()
         if self.enemy_i == len(self.enemy_arr) - 1:
             if self.chapters_i == len(chapters) - 1:
                 print('You beat the game, congratulations!')
@@ -44,15 +73,11 @@ class Game:
                 return
             getattr(self.player, self.curr_chapter['treasure'])()
             self.chapters_i += 1
-            self.curr_chapter = chapters[self.chapters_i]
             self.enemy_i = 0
-            # some of this should be a function probably
-            self.enemy_arr = [Enemy(**e, player=self.player, game=self)
-                              for e in self.curr_chapter['enemies']]
+            self.set_chapter()
         else:
             self.enemy_i += 1
-
-        self.curr_enemy = self.enemy_arr[self.enemy_i]
+            self.curr_enemy = self.enemy_arr[self.enemy_i]
         print(f'{self.curr_enemy.name} appears before you.')
 
     def rand_tile(self):

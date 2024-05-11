@@ -7,6 +7,9 @@ class Player:
     def __init__(self):
         self.health = 12
         self.max_health = 12
+        self.xp = 0
+        self.lvl = 1
+        self.dmg_multi = 1
         self.weights = weights
         self.master_weights = weights
 
@@ -15,6 +18,7 @@ class Player:
         for c in input_list:
             score += self.weights[c]
         dmg = damage[floor(score)]
+        dmg = floor(dmg * self.dmg_multi)
         print(f'Your word attacks for {dmg} damage.')
         return dmg
 
