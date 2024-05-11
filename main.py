@@ -11,11 +11,11 @@ class Game:
         self.tile_options = self.get_tile_options()
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
-        self.chapters_i = 1
+        self.chapters_i = 0
         self.curr_chapter = chapters[self.chapters_i]
         self.enemy_arr = [Enemy(**e, player=self.player, game=self)
                           for e in self.curr_chapter['enemies']]
-        self.enemy_i = 5
+        self.enemy_i = 0
         self.curr_enemy = self.enemy_arr[self.enemy_i]
 
     def load_words(self):
@@ -53,15 +53,15 @@ class Game:
             self.enemy_i += 1
 
         self.curr_enemy = self.enemy_arr[self.enemy_i]
-        print(f'{self.curr_enemy.name} appears before you')
+        print(f'{self.curr_enemy.name} appears before you.')
 
     def rand_tile(self):
         i = randint(0, len(self.tile_options) - 1)
         return self.tile_options[i]
 
     def print_UI(self):
-        print(f'\n\nEnemy: {self.curr_enemy.name}  '
-              f'Location: {self.curr_chapter["location"]}\n'
+        print(f'\n\nLocation: {self.curr_chapter["location"]}  '
+              f'Enemy: {self.curr_enemy.name}\n'
               f'Lex Health: {self.player.health}  '
               f'Enemy Health: {self.curr_enemy.health}\n'
               )
