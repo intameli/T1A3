@@ -16,11 +16,11 @@ chapters = [
 # 100, 250
 lvls = [
     {
-        'xp': 10,
+        'xp': 100,
         'effect': 'health'
     },
     {
-        'xp': 20,
+        'xp': 250,
         'effect': 'dmg'
     }
 ]

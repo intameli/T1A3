@@ -12,6 +12,7 @@ class Player:
         self.dmg_multi = 1
         self.weights = weights
         self.master_weights = weights
+        self.treasures = []
 
     def attack(self, input_list):
         score = 0
@@ -27,6 +28,7 @@ class Player:
         self.master_weights['Z'] = 2.5
         self.master_weights['Y'] = 2.5
         self.master_weights['X'] = 2.5
+        self.treasures.append('Bow of Zyx')
 
     def golden_fleece(self):
         pass
@@ -54,20 +56,6 @@ class Enemy:
 
     def attack(self):
         self.apply_ailments()
-        # for effect in self.ailments:
-        #     effect['turns'] -= 1
-        #     if effect['type'] == 'tile_smash':
-        #         if effect['turns'] == 0:
-        #             self.player.weights[effect['char']] = effect['weight']
-        #             self.ailments.remove(effect)
-        #         continue
-
-        #     print(f'You take {effect["dmg"]} {effect["type"]} damage.')
-        #     self.player.health -= effect['dmg']
-        #     if effect['turns'] == 0:
-        #         print(effect['end'])
-        #         self.ailments.remove(effect)
-
         curr_atk = self.attacks[self.attack_i]
         fn_str = curr_atk['type']
         getattr(self, fn_str)(curr_atk)

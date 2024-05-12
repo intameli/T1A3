@@ -12,7 +12,7 @@ class Game:
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
         self.chapters_i = 0
-        self.enemy_i = 0
+        self.enemy_i = 4
         self.set_chapter()
 
     def set_chapter(self):
@@ -78,6 +78,8 @@ class Game:
         else:
             self.enemy_i += 1
             self.curr_enemy = self.enemy_arr[self.enemy_i]
+        self.player.health = self.player.max_health
+        self.player.weights = self.player.master_weights
         print(f'{self.curr_enemy.name} appears before you.')
 
     def rand_tile(self):
@@ -85,20 +87,26 @@ class Game:
         return self.tile_options[i]
 
     def print_UI(self):
-        print(f'\n\nLocation: {self.curr_chapter["location"]}  '
+        print(f'\nLocation: {self.curr_chapter["location"]}  '
               f'Enemy: {self.curr_enemy.name}\n'
+              f'Level: {self.player.lvl}  XP: {self.player.xp}\n'
               f'Lex Health: {self.player.health}  '
-              f'Enemy Health: {self.curr_enemy.health}\n'
+              f'Enemy Health: {self.curr_enemy.health}'
               )
+        ail_str = ''
+        for effect in self.curr_enemy.ailments:
+            ail_str += f'Effect: {effect["type"]} Turns: {effect["turns"]}  '
+        if ail_str:
+            print(ail_str)
+        print(' ' * 15, 'Treasures:') if self.player.treasures else print('')
         for j in range(4):
             row = ''
             for i in range(4):
                 tile = self.tiles[(j * 4) + i]
                 row += tile + '  ' if len(tile) == 1 else tile + ' '
+            if len(self.player.treasures) > j:
+                row += f'    {self.player.treasures[j]}'
             print(row)
-        print('')
-        for effect in self.curr_enemy.ailments:
-            print(effect)
 
     def valid_tiles(self, player_input):
         tiles_copy = self.tiles.copy()
@@ -138,6 +146,14 @@ class Game:
                 break
         return input_arr
 
+    def player_death(self):
+        print(
+            "Oh no you died.\nDon't worry, you're only back to the start of the chapter.")
+        self.enemy_i = 0
+        self.curr_enemy = self.enemy_arr[self.enemy_i]
+        self.player.health = self.player.max_health
+        self.player.weights = self.player.master_weights
+
     def main_loop(self):
         print('*' * 20)
         while self.running:
@@ -146,7 +162,7 @@ class Game:
             if self.running == False:
                 break
             print('*' * 20)
-            print('\n')
+            print('')
 
             for c in input_list:
                 index = self.tiles.index(c)
@@ -155,10 +171,10 @@ class Game:
             self.curr_enemy.health -= self.player.attack(input_list)
             if self.curr_enemy.health <= 0:
                 self.next_enemy()
-                self.player.health = self.player.max_health
-                self.player.weights = self.player.master_weights
                 continue
             self.curr_enemy.attack()
+            if self.player.health <= 0:
+                self.player_death()
 
 
 Game().main_loop()
