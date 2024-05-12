@@ -1,3 +1,6 @@
+"""
+List of enemies in chapter 1
+"""
 atk = {'type': 'basic', 'dmg': 1}
 
 ch1_enemies = [

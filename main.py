@@ -2,10 +2,9 @@
 The main file for this program.
 Contains the Game class which has the main_loop method
 """
-
 from string import ascii_uppercase
 from random import randint
-from chapters_and_lvls import chapters, lvls
+from chapters_and_lvls import chapters, lvls, short_chapt, short_lvls
 from entities import Player, Enemy
 
 
@@ -19,8 +18,11 @@ class Game:
         self.tile_options = self.get_tile_options()
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
+        self.long = self.get_game_length()
+        self.lvls = lvls if self.long else short_lvls
+        self.chapters = chapters if self.long else short_chapt
         self.chapters_i = 0
-        self.enemy_i = 5
+        self.enemy_i = 0
         self.set_chapter()
 
     def set_chapter(self):
@@ -28,10 +30,20 @@ class Game:
 
         Enemy classes are created for each enemy in the chapter
         """
-        self.curr_chapter = chapters[self.chapters_i]
+        self.curr_chapter = self.chapters[self.chapters_i]
         self.enemy_list = [Enemy(**e, player=self.player, game=self)
                            for e in self.curr_chapter['enemies']]
         self.curr_enemy = self.enemy_list[self.enemy_i]
+
+    def get_game_length(self):
+        """Get whether the player wants to play the full game
+
+        Returns:
+            boolean: Whether or not you want a long game
+        """
+        prompt = ("Type 'long' to play the full game with 12 enemies,\n"
+                  "any other response will play the short version:  ")
+        return True if input(prompt).lower == 'long' else False
 
     def load_words(self):
         """Reads valid words from file
@@ -76,11 +88,11 @@ class Game:
         """Levels up the player if nessessary
         """
         try:
-            if self.player.xp >= lvls[self.player.lvl - 1]['xp']:
+            if self.player.xp >= self.lvls[self.player.lvl - 1]['xp']:
                 self.player.lvl += 1
                 print(
                     f'You have leveled up. You are now lvl {self.player.lvl}.')
-                match lvls[self.player.lvl - 2]['effect']:
+                match self.lvls[self.player.lvl - 2]['effect']:
                     case 'health':
                         self.player.max_health += 4
                         print('Your health has increased.')
@@ -103,7 +115,7 @@ class Game:
         self.add_xp()
         self.lvl_up()
         if self.enemy_i == len(self.enemy_list) - 1:
-            if self.chapters_i == len(chapters) - 1:
+            if self.chapters_i == len(self.chapters) - 1:
                 print('You beat the game, congratulations!')
                 self.running = False
                 return
@@ -127,8 +139,8 @@ class Game:
         i = randint(0, len(self.tile_options) - 1)
         return self.tile_options[i]
 
-    def print_UI(self):
-        """Prints the UI to the player
+    def print_ui(self):
+        """Prints the UI
         """
         print(f'\nLocation: {self.curr_chapter["location"]}  '
               f'Enemy: {self.curr_enemy.name}\n'
@@ -138,7 +150,7 @@ class Game:
               )
         ail_str = ''
         for effect in self.curr_enemy.ailments:
-            ail_str += f'Effect: {effect["type"]} Turns: {effect["turns"]}  '
+            ail_str += f'[Effect: {effect["type"]}, Turns: {effect["turns"]}]  '
         if ail_str:
             print(ail_str)
         print(' ' * 15, 'Treasures:') if self.player.treasures else print('')
@@ -179,6 +191,8 @@ class Game:
     def get_input(self):
         """Get user input and react to it
 
+        Loops until the player input is valid
+
         Returns:
             list: The valid tiles the user inputed
         """
@@ -216,13 +230,14 @@ class Game:
         """
         print('*' * 20)
         while self.running:
-            self.print_UI()
+            self.print_ui()
             input_list = self.get_input()
             if self.running == False:
                 break
             print('*' * 20)
             print('')
 
+            # Replace used tiles with random ones
             for c in input_list:
                 index = self.tiles.index(c)
                 self.tiles[index] = self.rand_tile()
@@ -236,4 +251,5 @@ class Game:
                 self.player_death()
 
 
-Game().main_loop()
+if __name__ == '__main__':
+    Game().main_loop()

@@ -1,9 +1,15 @@
-from weights_and_dmg import weights, damage
+"""
+Player and Enemy classes
+"""
 from math import floor
 from random import randint
+from weights_and_dmg import weights, damage
 
 
 class Player:
+    """Class that defines the player
+    """
+
     def __init__(self):
         self.health = 12
         self.max_health = 12
@@ -12,7 +18,7 @@ class Player:
         self.dmg_multi = 1
         self.weights = weights
         self.master_weights = weights
-        self.treasures = ['Bow of Zyx', 'Golden Fleece']
+        self.treasures = []
 
     def attack(self, input_list):
         """Calculates how much dmg your word does
@@ -37,6 +43,8 @@ class Player:
         return dmg
 
     def bow_of_zyx(self):
+        """Applies the effects of the item
+        """
         print('Obtained Bow of Zyx.')
         self.master_weights['Z'] = 2.5
         self.master_weights['Y'] = 2.5
@@ -44,10 +52,16 @@ class Player:
         self.treasures.append('Bow of Zyx')
 
     def golden_fleece(self):
-        pass
+        """Applies the effects of the item
+        """
 
 
 class Enemy:
+    """Class used by all enemies
+
+    Contains every enemy attack in the game
+    """
+
     def __init__(self, name, health, attacks, player, game):
         self.name = name
         self.health = health
@@ -58,6 +72,8 @@ class Enemy:
         self.ailments = []
 
     def apply_ailments(self):
+        """Calls the function/s for each ailment and removes if finished
+        """
         for effect in self.ailments:
             effect['turns'] -= 1
             if 'apply' in effect:
@@ -68,6 +84,10 @@ class Enemy:
                 self.ailments.remove(effect)
 
     def attack(self):
+        """Choses which attack to make
+
+        Also applies ailments
+        """
         self.apply_ailments()
         curr_atk = self.attacks[self.attack_i]
         fn_str = curr_atk['type']
@@ -77,10 +97,20 @@ class Enemy:
             self.attack_i = 0
 
     def basic(self, atk):
+        """A basic attack
+
+        Args:
+            atk (dictionary): Info about the attack
+        """
         print(f'{self.name} attacks you for {atk["dmg"]} damage.')
         self.player.health -= atk['dmg']
 
     def fire(self, atk_dict):
+        """A fire attack that burns for multiple turns
+
+        Args:
+            atk_dict (dictionary): Info about the attack
+        """
         atk = atk_dict.copy()
         print(f'{self.name} burns you for {atk["dmg"]} damage.')
         print('You are now on fire.')
@@ -98,6 +128,11 @@ class Enemy:
         self.ailments.append(atk)
 
     def tile_smash(self, atk_dict):
+        """An attack that makes a random letter do no dmg
+
+        Args:
+            atk_dict (dictionary): Info about the attack
+        """
         atk = atk_dict.copy()
         atk['char'] = self.game.tiles[randint(0, 15)]
         atk['weight'] = self.player.weights[atk['char']]

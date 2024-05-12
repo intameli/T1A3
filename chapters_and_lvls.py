@@ -1,3 +1,7 @@
+"""
+List of chapters in game
+List of levels attainable in game
+"""
 from ch1_enemies import ch1_enemies
 from ch2_enemies import ch2_enemies
 
@@ -13,7 +17,10 @@ chapters = [
         'treasure': 'golden_fleece'
     }
 ]
-# 100, 250
+
+short_chapt = [{**ch, 'enemies': ch['enemies'][-1:]}
+               for i, ch in enumerate(chapters)]
+
 lvls = [
     {
         'xp': 100,
@@ -24,3 +31,5 @@ lvls = [
         'effect': 'dmg'
     }
 ]
+
+short_lvls = [{**lvl, 'xp': i * 15} for i, lvl in enumerate(lvls)]

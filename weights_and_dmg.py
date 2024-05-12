@@ -1,3 +1,8 @@
+"""
+Weights dictionary for calculating player damage
+dmg dictionary also for finding player damage
+Both are created from info on the Bookwork Adventures Wiki
+"""
 weights = {
     'A': 1,
     'B': 1.25,
@@ -27,26 +32,6 @@ weights = {
     'Z': 2
 }
 
-"""
-Below is the code used to generate the weights dictionary
-"""
-# scores = {
-#     1.25: ['B', 'C', 'F', 'H', 'M', 'P'],
-#     1.5: ['V', 'W', 'Y'],
-#     1.75: ['J', 'k'],
-#     2: ['X', 'Z'],
-#     2.75: ['Qu']
-# }
-# weights = {}
-# for c in ascii_uppercase:
-#     char = c
-#     if c == 'Q':
-#         char = 'Qu'
-#     weights[char] = 1
-#     for key in scores:
-#         if char in scores[key]:
-#             weights[char] = key
-
 damage_original = {
     0: 0,
     1: 0,
@@ -72,4 +57,8 @@ damage_original = {
     21: 13,
     22: 13
 }
+# All damages are multiplied by 4 because the original game uses hearts to
+# represent health (min damage is 1/4 of heart) and I
+# want health to be a whole number
+# Health and enemy attack are also using values from the wiki multiplied by 4
 damage = {k: int(v*4) for k, v in damage_original.items()}
