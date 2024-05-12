@@ -12,7 +12,7 @@ class Player:
         self.dmg_multi = 1
         self.weights = weights
         self.master_weights = weights
-        self.treasures = []
+        self.treasures = ['Bow of Zyx', 'Golden Fleece']
 
     def attack(self, input_list):
         score = 0

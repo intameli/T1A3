@@ -12,7 +12,7 @@ class Game:
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
         self.chapters_i = 0
-        self.enemy_i = 4
+        self.enemy_i = 5
         self.set_chapter()
 
     def set_chapter(self):
