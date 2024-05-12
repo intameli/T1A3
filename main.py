@@ -1,10 +1,18 @@
-from chapters_and_lvls import chapters, lvls
+"""
+The main file for this program.
+Contains the Game class which has the main_loop method
+"""
+
 from string import ascii_uppercase
 from random import randint
+from chapters_and_lvls import chapters, lvls
 from entities import Player, Enemy
 
 
 class Game:
+    """Class that controls the game
+    """
+
     def __init__(self):
         self.running = True
         self.words = self.load_words()
@@ -16,17 +24,33 @@ class Game:
         self.set_chapter()
 
     def set_chapter(self):
+        """sets curr_chapter, enemy_list, curr_enemy
+
+        Enemy classes are created for each enemy in the chapter
+        """
         self.curr_chapter = chapters[self.chapters_i]
-        self.enemy_arr = [Enemy(**e, player=self.player, game=self)
-                          for e in self.curr_chapter['enemies']]
-        self.curr_enemy = self.enemy_arr[self.enemy_i]
+        self.enemy_list = [Enemy(**e, player=self.player, game=self)
+                           for e in self.curr_chapter['enemies']]
+        self.curr_enemy = self.enemy_list[self.enemy_i]
 
     def load_words(self):
-        with open('wordlist.txt') as word_file:
+        """Reads valid words from file
+
+        Returns:
+            set: Every word in the bookworm dictionary
+        """
+        with open('wordlist.txt', encoding="utf-8") as word_file:
             valid_words = set(word_file.read().split())
         return valid_words
 
     def get_tile_options(self):
+        """Creates a list of possible tiles
+
+        Vowels are added twice
+
+        Returns:
+            list: Tile options
+        """
         options = []
         vowels = ['A', 'E', 'I', 'O', 'U']
         for c in ascii_uppercase:
@@ -39,14 +63,18 @@ class Game:
         return options
 
     def add_xp(self):
+        """Calculate XP and update it
+        """
         multiply = 10
-        if len(self.enemy_arr) == self.enemy_i + 1:
+        if len(self.enemy_list) == self.enemy_i + 1:
             multiply = 15
         xp = multiply * (self.chapters_i + 1)
         self.player.xp += xp
         print(f'You received {xp} xp.')
 
     def lvl_up(self):
+        """_summary_
+        """
         try:
             if self.player.xp >= lvls[self.player.lvl - 1]['xp']:
                 self.player.lvl += 1
@@ -66,7 +94,7 @@ class Game:
         print(f'You defeated {self.curr_enemy.name}.')
         self.add_xp()
         self.lvl_up()
-        if self.enemy_i == len(self.enemy_arr) - 1:
+        if self.enemy_i == len(self.enemy_list) - 1:
             if self.chapters_i == len(chapters) - 1:
                 print('You beat the game, congratulations!')
                 self.running = False
@@ -77,12 +105,17 @@ class Game:
             self.set_chapter()
         else:
             self.enemy_i += 1
-            self.curr_enemy = self.enemy_arr[self.enemy_i]
+            self.curr_enemy = self.enemy_list[self.enemy_i]
         self.player.health = self.player.max_health
         self.player.weights = self.player.master_weights
         print(f'{self.curr_enemy.name} appears before you.')
 
     def rand_tile(self):
+        """
+
+        Returns:
+            string: _description_
+        """
         i = randint(0, len(self.tile_options) - 1)
         return self.tile_options[i]
 
@@ -150,7 +183,7 @@ class Game:
         print(
             "Oh no you died.\nDon't worry, you're only back to the start of the chapter.")
         self.enemy_i = 0
-        self.curr_enemy = self.enemy_arr[self.enemy_i]
+        self.curr_enemy = self.enemy_list[self.enemy_i]
         self.player.health = self.player.max_health
         self.player.weights = self.player.master_weights
 

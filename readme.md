@@ -1,4 +1,4 @@
-# T1A3
+# T1A3: Bookworm Adventures Terminal Clone
 
 Jacob Smith
 
@@ -10,13 +10,40 @@ Jacob Smith
 
 [PEP 8](https://peps.python.org/pep-0008/)
 
+[Google style docstrings](https://google.github.io/styleguide/pyguide.html)
+
+## Help
+
+### Installation
+
+Run `bash script.sh` in your terminal at the programs directory to start
+
+### Requirements
+
+- python 3.6 or higher
+- bash
+
+Should run on any computer that meets those two. 3.6 required due to using fstrings. The program has no dependencies.
+
+### How to play
+
+Fight the enemies by making words out of the 16 random letter tiles. You can only use each letter as many times as it appears. Your damage is determined by word length and letter rarity. Each tile you use is replaced by a new random tile at the end of your turn. Minimum word length is 3 tiles.
+
+Enemies have various attacks they can use against you so watch out. Some even last multiple turns. As you beat each enemy you gain XP and will eventually level up. Each location has a boss and a treasure at the end. Treasures help you out in some way.
+
+Treasures:
+
+The Bow of Zyx: Increases damage done by X, Y and Z letter tiles
+
+Golden Fleece: Increases player health by 1 heart
+
 ## Features
 
 ### Core gameplay loop
 
-The core gameplay loop consists of displaying the UI, getting input and then displaying the resulting changes. Despite this being the order that the program executes these step in the code, due to the program pausing for player input, the player sees the output for the previous turn first. (Unless it is the first turn obviously)
+The core gameplay loop consists of displaying the UI, getting input and then displaying the resulting changes. This is the order the program executes these step in the code. However, due to the program pausing for player input, the player sees the output for the previous turn first. (Unless it is the first turn obviously)
 
-Under the previous input a line of stars is printed so that each turn can be differentiated. Below that, outputs from what happened in the previous turn are printed by various functions. I will go into more detail about this in each features specific section. The outputs you might see here include your attack, the enemies attack, ailments that have begun or ended, whether you have defeated an enemy and a new one has appeared, treasures you have obtained and the next chapter/location you will be entering.
+Under the previous input, a line of stars is printed so that each turn can be differentiated. Below that, outputs from what happened in the previous turn are printed by various functions. I will go into more detail about this in each features specific section. The outputs you might see here include your attack, the enemies attack, ailments that have begun or ended, whether you have defeated an enemy and a new one has appeared, treasures you have obtained and the next chapter/location you will be entering.
 
 Variables from all the other features are displayed in the UI. Player health, enemy health, location, enemy name, player level and player XP are all displayed everytime. If any ailments are affecting the player they are optionally shown. Also optionally, if at least one treasure has been found they are displayed in a column.
 
@@ -29,10 +56,14 @@ The finished version of what this all looks like can be seen below.
 
 ### Player Attack
 
+Luckily the wiki for Bookworm Adventures
+
 ### Health
 
 The player and every enemy have a variable in their class representing their health. The player also has a max health variable so that their health can be reset to full after each enemy. If the player health is equal or less than zero at the end of a turn then the player is taken back to the first enemy of the chapter. If the enemies health is equal or less than zero at the end of a turn, the player progresses to the next enemy. If it is the last enemy in the chapter that is defeated, the player progresses to the next chapter and recieves the treasure from the chapter they just completed.
 
 ## Implementation plan
 
-## Help documentation
+### Core gameplay loop
+
+- test
