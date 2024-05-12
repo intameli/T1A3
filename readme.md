@@ -27,9 +27,11 @@ A promt asking for the player to make a word is displayed next to the user input
 The finished version of what this all looks like can be seen below.
 ![UI](docs/UI.png)
 
+### Player Attack
+
 ### Health
 
-The player and every enemy have a variable in their class representing their health. The player also has a max health variable so that their health can be reset to full after each enemy.
+The player and every enemy have a variable in their class representing their health. The player also has a max health variable so that their health can be reset to full after each enemy. If the player health is equal or less than zero at the end of a turn then the player is taken back to the first enemy of the chapter. If the enemies health is equal or less than zero at the end of a turn, the player progresses to the next enemy. If it is the last enemy in the chapter that is defeated, the player progresses to the next chapter and recieves the treasure from the chapter they just completed.
 
 ## Implementation plan
 
