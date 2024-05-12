@@ -15,6 +15,19 @@ class Player:
         self.treasures = ['Bow of Zyx', 'Golden Fleece']
 
     def attack(self, input_list):
+        """Calculates how much dmg your word does
+
+        First calculates total letter scores then 
+        uses that to get dmg from a dict
+
+        Args:
+            input_list (list): The valid tiles from the player
+
+        Returns:
+            integer: The amount of dmg you do
+        """
+        if len(input_list) == 0:
+            return 0
         score = 0
         for c in input_list:
             score += self.weights[c]

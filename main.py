@@ -73,7 +73,7 @@ class Game:
         print(f'You received {xp} xp.')
 
     def lvl_up(self):
-        """_summary_
+        """Levels up the player if nessessary
         """
         try:
             if self.player.xp >= lvls[self.player.lvl - 1]['xp']:
@@ -91,6 +91,14 @@ class Game:
             pass
 
     def next_enemy(self):
+        """Set the next enemy/chapter
+
+        Function also:
+        - adds xp and levels up
+        - resets player health and weights(because of the tile_smash attack)
+        - checks for end of the game
+        - runs treasure function if you beat a boss
+        """
         print(f'You defeated {self.curr_enemy.name}.')
         self.add_xp()
         self.lvl_up()
@@ -111,15 +119,17 @@ class Game:
         print(f'{self.curr_enemy.name} appears before you.')
 
     def rand_tile(self):
-        """
+        """Gets a random tile
 
         Returns:
-            string: _description_
+            string: The letter/s
         """
         i = randint(0, len(self.tile_options) - 1)
         return self.tile_options[i]
 
     def print_UI(self):
+        """Prints the UI to the player
+        """
         print(f'\nLocation: {self.curr_chapter["location"]}  '
               f'Enemy: {self.curr_enemy.name}\n'
               f'Level: {self.player.lvl}  XP: {self.player.xp}\n'
@@ -142,8 +152,16 @@ class Game:
             print(row)
 
     def valid_tiles(self, player_input):
+        """Checks if input is valid
+
+        Args:
+            player_input (string): Input from the player
+
+        Returns:
+            list: The valid tiles the user inputed
+        """
         tiles_copy = self.tiles.copy()
-        arr = []
+        input_list = []
         for i, c in enumerate(player_input):
             char = c
             if c == 'Q' and player_input[i + 1] == 'U':
@@ -152,24 +170,28 @@ class Game:
                 continue
             if char in tiles_copy:
                 tiles_copy.remove(char)
-                arr.append(char)
+                input_list.append(char)
             else:
-                arr = []
+                input_list = []
                 break
-        return arr
+        return input_list
 
     def get_input(self):
-        # error handling for numbers?
+        """Get user input and react to it
+
+        Returns:
+            list: The valid tiles the user inputed
+        """
         while True:
             player_input = input("Make a word! :  ").upper()
-            input_arr = self.valid_tiles(player_input)
+            input_list = self.valid_tiles(player_input)
             if player_input == '/QUIT':
                 self.running = False
                 break
             elif player_input == '/SCRAMBLE':
                 self.tiles = [self.rand_tile() for i in range(16)]
                 break
-            elif len(input_arr) == 0:
+            elif len(input_list) == 0:
                 print('You can only use characters found in the tiles above')
                 continue
             elif player_input.lower() not in self.words:
@@ -177,9 +199,11 @@ class Game:
                 continue
             else:
                 break
-        return input_arr
+        return input_list
 
     def player_death(self):
+        """Handles the death of the player
+        """
         print(
             "Oh no you died.\nDon't worry, you're only back to the start of the chapter.")
         self.enemy_i = 0
@@ -188,6 +212,8 @@ class Game:
         self.player.weights = self.player.master_weights
 
     def main_loop(self):
+        """The main loop that runs the game
+        """
         print('*' * 20)
         while self.running:
             self.print_UI()
