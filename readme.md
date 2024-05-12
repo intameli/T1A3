@@ -20,11 +20,16 @@ Under the previous input a line of stars is printed so that each turn can be dif
 
 Variables from all the other features are displayed in the UI. Player health, enemy health, location, enemy name, player level and player XP are all displayed everytime. If any ailments are affecting the player they are optionally shown. Also optionally, if at least one treasure has been found they are displayed in a column.
 
-more about tiles like how many vowels
-Above the input, the tiles the player can use to make words are displayed. A promt asking for the player to make a word is displayed next to the user input. Possible valid inputs include a word made of the tiles that is also in the dictionary, /quit to quit the program and /scramble to get random new tiles at the cost of not attacking for a turn. If the input is not one of those options, a message is displayed providing the reason for its rejection.
+Above the input, the tiles the player can use to make words are displayed. The 26 possible tiles correspond to the 26 letters of the alphabet except for Q which is joined with a u to make a Qu tile representing both letters used together. There is still an individual U tile. The "random" tiles are chosen randomly from a list of the possible tiles where the vowels appear twice in the list making them more likely to be chosen.
+
+A promt asking for the player to make a word is displayed next to the user input. Possible valid inputs include a word made of the tiles that is also in the dictionary, /quit to quit the program and /scramble to get random new tiles at the cost of not attacking for a turn. If the input is not one of those options, a message is displayed providing the reason for its rejection.
 
 The finished version of what this all looks like can be seen below.
 ![UI](docs/UI.png)
+
+### Health
+
+The player and every enemy have a variable in their class representing their health. The player also has a max health variable so that their health can be reset to full after each enemy.
 
 ## Implementation plan
 

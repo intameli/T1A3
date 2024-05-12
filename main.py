@@ -54,7 +54,7 @@ class Game:
                     f'You have leveled up. You are now lvl {self.player.lvl}.')
                 match lvls[self.player.lvl - 2]['effect']:
                     case 'health':
-                        self.player.health += 4
+                        self.player.max_health += 4
                         print('Your health has increased.')
                     case 'dmg':
                         self.player.dmg_multi += 0.25
