@@ -12,15 +12,15 @@ class Game:
     """Class that controls the game
     """
 
-    def __init__(self):
+    def __init__(self, long):
         self.running = True
+        self.long = long
+        self.lvls = lvls if self.long else short_lvls
+        self.chapters = chapters if self.long else short_chapt
         self.words = self.load_words()
         self.tile_options = self.get_tile_options()
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
-        self.long = self.get_game_length()
-        self.lvls = lvls if self.long else short_lvls
-        self.chapters = chapters if self.long else short_chapt
         self.chapters_i = 0
         self.enemy_i = 0
         self.set_chapter()
@@ -34,16 +34,6 @@ class Game:
         self.enemy_list = [Enemy(**e, player=self.player, game=self)
                            for e in self.curr_chapter['enemies']]
         self.curr_enemy = self.enemy_list[self.enemy_i]
-
-    def get_game_length(self):
-        """Get whether the player wants to play the full game
-
-        Returns:
-            boolean: Whether or not you want a long game
-        """
-        prompt = ("Type 'long' to play the full game with 12 enemies,\n"
-                  "any other response will play the short version:  ")
-        return True if input(prompt).lower == 'long' else False
 
     def load_words(self):
         """Reads valid words from file
@@ -111,18 +101,23 @@ class Game:
         - checks for end of the game
         - runs treasure function if you beat a boss
         """
-        print(f'You defeated {self.curr_enemy.name}.')
+        print(f'You defeated {self.curr_enemy.name}')
         self.add_xp()
         self.lvl_up()
+        print('You continue along the path.')
         if self.enemy_i == len(self.enemy_list) - 1:
+            print('You find a chest and open it.')
+            getattr(self.player, self.curr_chapter['treasure'])()
             if self.chapters_i == len(self.chapters) - 1:
-                print('You beat the game, congratulations!')
+                print('You beat the game, congratulations.')
                 self.running = False
                 return
-            getattr(self.player, self.curr_chapter['treasure'])()
+            print(f"You come to the end of {self.curr_chapter['location']}")
             self.chapters_i += 1
             self.enemy_i = 0
             self.set_chapter()
+            print(
+                f"You See a sign inicating you are entering {self.curr_chapter['location']}")
         else:
             self.enemy_i += 1
             self.curr_enemy = self.enemy_list[self.enemy_i]
@@ -229,6 +224,12 @@ class Game:
         """The main loop that runs the game
         """
         print('*' * 20)
+        print('\nYou are a worm named Lex. One day you were chilling\n'
+              'in the library when you were magically sucked into a book.\n'
+              'You seem to be in some kind of liminal space that resembles\n'
+              f'Ancient Greece. As you walk foward {self.curr_enemy.name}\n'
+              "appears before you. Oh No. It's battle time.")
+
         while self.running:
             self.print_ui()
             input_list = self.get_input()
@@ -252,4 +253,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    Game().main_loop()
+    PROMPT = ("Type 'long' to play the full game with 13 enemies,\n"
+              "any other response will play the short version:  ")
+    LONG = True if input(PROMPT).lower() == 'long' else False
+    Game(LONG).main_loop()
