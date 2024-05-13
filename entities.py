@@ -3,7 +3,7 @@ Player and Enemy classes
 """
 from math import floor
 from random import randint
-from weights_and_dmg import weights, damage
+from data.weights_and_dmg import weights, damage
 
 
 class Player:

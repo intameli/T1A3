@@ -2,9 +2,9 @@
 List of chapters in game
 List of levels attainable in game
 """
-from ch1_enemies import ch1_enemies
-from ch2_enemies import ch2_enemies
-from ch3_enemies import ch3_enemies
+from data.ch1_enemies import ch1_enemies
+from data.ch2_enemies import ch2_enemies
+from data.ch3_enemies import ch3_enemies
 
 chapters = [
     {
@@ -29,11 +29,11 @@ short_chapt = [{**ch, 'enemies': ch['enemies'][-1:]}
 
 lvls = [
     {
-        'xp': 100,
+        'xp': 50,
         'effect': 'health'
     },
     {
-        'xp': 250,
+        'xp': 150,
         'effect': 'dmg'
     }
 ]

@@ -2,9 +2,9 @@
 The main file for this program.
 Contains the Game class which has the main_loop method
 """
-from string import ascii_uppercase
 from random import randint
-from chapters_and_lvls import chapters, lvls, short_chapt, short_lvls
+from util import WORDS, TILE_OPTIONS, valid_tiles
+from data.chapters_and_lvls import chapters, lvls, short_chapt, short_lvls
 from entities import Player, Enemy
 
 
@@ -14,11 +14,8 @@ class Game:
 
     def __init__(self, long):
         self.running = True
-        self.long = long
-        self.lvls = lvls if self.long else short_lvls
-        self.chapters = chapters if self.long else short_chapt
-        self.words = self.load_words()
-        self.tile_options = self.get_tile_options()
+        self.lvls = lvls if long else short_lvls
+        self.chapters = chapters if long else short_chapt
         self.tiles = [self.rand_tile() for i in range(16)]
         self.player = Player()
         self.chapters_i = 0
@@ -34,35 +31,6 @@ class Game:
         self.enemy_list = [Enemy(**e, player=self.player, game=self)
                            for e in self.curr_chapter['enemies']]
         self.curr_enemy = self.enemy_list[self.enemy_i]
-
-    def load_words(self):
-        """Reads valid words from file
-
-        Returns:
-            set: Every word in the bookworm dictionary
-        """
-        with open('wordlist.txt', encoding="utf-8") as word_file:
-            valid_words = set(word_file.read().split())
-        return valid_words
-
-    def get_tile_options(self):
-        """Creates a list of possible tiles
-
-        Vowels are added twice
-
-        Returns:
-            list: Tile options
-        """
-        options = []
-        vowels = ['A', 'E', 'I', 'O', 'U']
-        for c in ascii_uppercase:
-            char = c
-            if c == 'Q':
-                char = 'Qu'
-            options.append(char)
-            if char in vowels:
-                options.append(char)
-        return options
 
     def add_xp(self):
         """Calculate XP and update it
@@ -131,8 +99,8 @@ class Game:
         Returns:
             string: The letter/s
         """
-        i = randint(0, len(self.tile_options) - 1)
-        return self.tile_options[i]
+        i = randint(0, len(TILE_OPTIONS) - 1)
+        return TILE_OPTIONS[i]
 
     def print_ui(self):
         """Prints the UI
@@ -158,31 +126,6 @@ class Game:
                 row += f'    {self.player.treasures[j]}'
             print(row)
 
-    def valid_tiles(self, player_input):
-        """Checks if input is valid
-
-        Args:
-            player_input (string): Input from the player
-
-        Returns:
-            list: The valid tiles the user inputed
-        """
-        tiles_copy = self.tiles.copy()
-        input_list = []
-        for i, c in enumerate(player_input):
-            char = c
-            if c == 'Q' and player_input[i + 1] == 'U':
-                char = 'Qu'
-            if c == 'U' and player_input[i - 1] == 'Q':
-                continue
-            if char in tiles_copy:
-                tiles_copy.remove(char)
-                input_list.append(char)
-            else:
-                input_list = []
-                break
-        return input_list
-
     def get_input(self):
         """Get user input and react to it
 
@@ -193,7 +136,7 @@ class Game:
         """
         while True:
             player_input = input("Make a word! :  ").upper()
-            input_list = self.valid_tiles(player_input)
+            input_list = valid_tiles(player_input, self.tiles)
             if player_input == '/QUIT':
                 self.running = False
                 break
@@ -203,7 +146,7 @@ class Game:
             elif len(input_list) == 0:
                 print('You can only use characters found in the tiles above')
                 continue
-            elif player_input.lower() not in self.words:
+            elif player_input.lower() not in WORDS:
                 print('Word not found in dictionary')
                 continue
             else:
@@ -228,7 +171,10 @@ class Game:
               'in the library when you were magically sucked into a book.\n'
               'You seem to be in some kind of liminal space that resembles\n'
               f'Ancient Greece. As you walk foward {self.curr_enemy.name}\n'
-              "appears before you. Oh No. It's battle time.")
+              "appears before you. Oh No. It's battle time.\n\n"
+              '/quit to exit game.\n'
+              '/scramble to skip your attack and get all new tiles.\n'
+              'Minimum word length is 3 tiles')
 
         while self.running:
             self.print_ui()
@@ -253,7 +199,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    PROMPT = ("Type 'long' to play the full game with 13 enemies,\n"
+    PROMPT = ("\nType 'long' to play the full game with 13 enemies,\n"
               "any other response will play the short version:  ")
     LONG = True if input(PROMPT).lower() == 'long' else False
     Game(LONG).main_loop()
