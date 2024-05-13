@@ -82,15 +82,15 @@ class Enemy:
             atk_dict (dictionary): Info about the attack
         """
         atk = atk_dict.copy()
-        atk['char'] = self.game.tiles[randint(0, 15)]
-        atk['weight'] = self.player.weights[atk['char']]
-        self.player.weights[atk['char']] = 0
+        char = self.game.tiles[randint(0, 15)]
+        weight = self.player.weights[char]
+        self.player.weights[char] = 0
 
         def end():
-            self.player.weights[atk['char']] = atk['weight']
-            print(f'{atk["char"]} tiles are no longer smashed.')
+            self.player.weights[char] = weight
+            print(f'{char} tiles are no longer smashed.')
         atk['end'] = end
 
         self.ailments.append(atk)
-        print(f'{self.name} smashes the {atk["char"]} tiles, '
+        print(f'{self.name} smashes the {char} tiles, '
               f'they now do no damage.')

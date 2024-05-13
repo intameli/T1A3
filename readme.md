@@ -66,7 +66,9 @@ When the enemies health is less than or equal to 0, lots happens. If the enemy i
 
 ### Data
 
-I made the design decision early on that I would decouple the rules of the game from the content. In practice this meant that instead of writing a class for every enemy in the game I wrote one enemy class that had every attack and created instances of it by unpacking a dictionary into its arguments. This allowed me to write the content of the game i.e the enemies stats and moves, also the chapters and levels, as just lists of dictionaries. I think this makes the games easy to expand as new enemies and chapters can easily created that use the existing moves. The separation just feels right to me.
+I made the design decision early on that I would decouple the rules of the game from the content. In practice this meant that instead of writing a class for every enemy in the game I wrote one enemy class that had every attack and created instances of it by unpacking a dictionary into its arguments. This allowed me to write the content of the game i.e the enemies stats and moves, also the chapters and levels, as just lists of dictionaries. I think this makes the game easy to expand as new enemies and chapters can easily be created that use the existing moves. The separation just feels right to me.
+
+I found a site that had the Bookworm Adventures word list so as far a I am aware I am using the same dictionary as the real game. (link in References)
 
 ### Enemy Class
 
@@ -90,7 +92,7 @@ The other 2 attacks, fire and tile_smash have a value called turns. Both of thes
 
 Fire attacks also have dmg. The method damages the player and then defines two functions inside the copied attack dictionary that is then added to the ailments list. The apply function damages and prints and the end function just prints that it's over. This allows the attack to do damage over multiple turns.
 
-The tile_smash attack also adds an ailment. It doesn't take dmg, just turns and type. This attack picks a random tile and changes the weight of all instances of that tile to 0 (so it no longer contributes to damage). The weight that was taken from the letter is stored in the attack dictionary so it can be used in the end function to return the letter to its original weight.
+The tile_smash attack also adds an ailment. It doesn't take dmg, just turns and type. This attack picks a random tile and changes the weight of all instances of that tile to 0 (so it no longer contributes to damage). The weight that was taken from the letter is stored in a variable so it can be used in the end function to return the letter to its original weight.
 
 ### Player Class
 
@@ -110,7 +112,7 @@ Also the command `bash lines_of_code.sh` will run a script that counts the numbe
 
 ## Implementation plan
 
-The order I had to prioritise each feature was as follows. First I worked on getting the basics of the Game class running. Once I had a basic loop with some UI and input, I worked on the basics of the Player class. Then I created a list of enemies so that I could start creating the enemy objects. After getting the basics of the Enemy object, the project opened up more, allowing me to slowly build each part of the program piece by piece. Interestingly I created the level up and add xp functions rights at the end as they were not necessary for the other features to work. I didn't set deadlines for the features, just tried to work on something every day.
+I prioritised each feature in the following way. First I worked on getting the basics of the Game class running. Once I had a basic loop with some UI and input, I worked on the basics of the Player class. Then I created a list of enemies so that I could start creating the enemy objects. After getting the basics of the Enemy object, the project opened up more, allowing me to slowly build each part of the program piece by piece. Interestingly I created the level up and add xp functions right at the end as they were not necessary for the other features to work. I didn't set deadlines for the features, just tried to work on something every day.
 
 Below is how I broke each feature up.
 
@@ -124,3 +126,5 @@ Below is how I broke each feature up.
 [Bookworm Adventures Wiki](https://bookwormadvs.fandom.com/wiki/Bookworm_Adventures_Wikia)
 
 [The Other Bookworm Adventures Wiki](https://bookwormadventures.fandom.com/wiki/Bookworm_Adventures)
+
+[Bookworm Adventures Volume 1 Word List](https://www.dugongue.com/BookwormAdventures/ba1-wordlist.txt)
