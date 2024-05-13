@@ -10,7 +10,7 @@ def load_words():
     Returns:
         set: Every word in the bookworm dictionary
     """
-    with open('wordlist.txt', encoding="utf-8") as word_file:
+    with open('data/wordlist.txt', encoding="utf-8") as word_file:
         valid_words = set(word_file.read().split())
     return valid_words
 

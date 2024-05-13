@@ -5,7 +5,8 @@ Contains the Game class which has the main_loop method
 from random import randint
 from util import WORDS, TILE_OPTIONS, valid_tiles
 from data.chapters_and_lvls import chapters, lvls, short_chapt, short_lvls
-from entities import Player, Enemy
+from enemy import Enemy
+from player import Player
 
 
 class Game:
@@ -85,7 +86,7 @@ class Game:
             self.enemy_i = 0
             self.set_chapter()
             print(
-                f"You See a sign inicating you are entering {self.curr_chapter['location']}")
+                f"You See a sign indicating you are entering {self.curr_chapter['location']}")
         else:
             self.enemy_i += 1
             self.curr_enemy = self.enemy_list[self.enemy_i]
